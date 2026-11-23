@@ -1,0 +1,12 @@
+10	cross-session-repo-claim.sh	-
+10	foreign-worktree-changes-gate.sh	-
+10	worktree-junction-remove-gate.sh	-
+20	discard-uncommitted-gate.sh	-
+20	bash-trace-leak-gate.sh	-
+20	inplace-edit-gate.sh	-
+20	git-commit-scope-gate.sh	-
+20	grep-memory-gate.sh	-
+20	short-path-gate.sh	-
+20	msys-command-traps-nudge.sh	-
+20	substitution-stdin-hang-gate.sh	-
+10	dotfile-secret-print-gate.sh	-

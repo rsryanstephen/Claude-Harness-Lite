@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "attribution": {
+    "pr": ""
+  },
+  "env": {
+    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "1",
+    "CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Bash",
+      "PowerShell",
+      "Read",
+      "Skill",
+      "Grep",
+      "Glob",
+      "Write",
+      "Agent",
+      "Agent(WriteFile)",
+      "Agent(ReadFile)",
+      "Agent(DeleteFile)",
+      "Agent(MoveFile)",
+      "Agent(Explore)",
+      "ExitPlanMode",
+      "LSP",
+      "Monitor",
+      "NotebookEdit",
+      "TaskCreate",
+      "TaskGet",
+      "TaskList",
+      "TaskOutput",
+      "TaskStop",
+      "TaskUpdate",
+      "TodoWrite",
+      "ToolSearch",
+      "WebFetch",
+      "WebSearch",
+      "WebSearch(*)",
+      "Artifact",
+      "Artifact(*)",
+      "KillShell",
+      "Write(*)",
+      "Bash(rm *)",
+      "Bash(rmdir *)",
+      "Bash(*)",
+      "Bash(git *)",
+      "Bash(dotnet *)",
+      "Bash(bash \"$HOME/.claude/*)",
+      "Bash(bash ~/.claude/*)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(rm *)",
+      "PowerShell(rmdir *)",
+      "PowerShell(del *)",
+      "PowerShell(rd *)",
+      "PowerShell(ri *)",
+      "PowerShell(erase *)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "mcp__claude_ai_Slack",
+      "mcp__claude_ai_Gmail"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Bash(curl * | sh*)",
+      "Bash(curl * | bash*)",
+      "Bash(curl * -o /etc/*)",
+      "Bash(curl * -o /usr/*)",
+      "Bash(sudo *)",
+      "Bash(eval *)",
+      "Bash(exec *)",
+      "Bash(chown *)",
+      "Bash(kill *)",
+      "Bash(xargs *)",
+      "Bash(fdisk *)",
+      "Bash(erase *)",
+      "Bash(iwr *)",
+      "Bash(irm *)",
+      "Bash(iex *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push --force)",
+      "Bash(git push -f)",
+      "PowerShell(curl * | iex*)",
+      "PowerShell(sudo *)",
+      "PowerShell(eval *)",
+      "PowerShell(kill *)",
+      "PowerShell(chown *)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(iwr *)",
+      "PowerShell(irm *)",
+      "PowerShell(iex *)",
+      "PowerShell(git push --force *)",
+      "PowerShell(git push -f *)",
+      "mcp__claude_ai_Asana",
+      "mcp__claude_ai_Atlassian",
+      "mcp__claude_ai_Atlassian_MCP",
+      "mcp__claude_ai_Box",
+      "mcp__claude_ai_Canva",
+      "mcp__claude_ai_Claude_Data",
+      "mcp__claude_ai_Claude_Docs",
+      "mcp__claude_ai_Fathom",
+      "mcp__claude_ai_Figma",
+      "mcp__claude_ai_Google_Calendar",
+      "mcp__claude_ai_Google_Docs",
+      "mcp__claude_ai_Google_Drive",
+      "mcp__claude_ai_Google_Sheets",
+      "mcp__claude_ai_Google_Slides",
+      "mcp__claude_ai_HubSpot",
+      "mcp__claude_ai_Intercom",
+      "mcp__claude_ai_Linear",
+      "mcp__claude_ai_Meetings",
+      "mcp__claude_ai_Microsoft_Learn",
+      "mcp__claude_ai_Miro",
+      "mcp__claude_ai_Notion",
+      "mcp__claude_ai_Pipedrive",
+      "mcp__claude_ai_Zoom_for_Claude",
+      "mcp__claude_ai_monday_com"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/hook-run.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/symlink-write-gate.sh\"",
+            "shell": "bash",
+            "timeout": 20,
+            "statusMessage": "Checking for a direct write through a harness symlink"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/hook-run.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/file-claim-record.sh\"",
+            "shell": "bash",
+            "timeout": 20,
+            "statusMessage": "Recording this session's claim on the edited file"
+          }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/hook-run.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/subagent-model-tiering-gate.sh\"",
+            "shell": "bash",
+            "timeout": 20,
+            "statusMessage": "Checking subagent model tiering"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/dispatch.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/dispatch-pre-bash.manifest\"",
+            "shell": "bash",
+            "timeout": 660,
+            "statusMessage": "Running Bash gate block (dispatched)"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/hook-run.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/dotfile-secret-print-gate.sh\"",
+            "shell": "bash",
+            "timeout": 10,
+            "statusMessage": "Checking for a credential-file print"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/dispatch.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/dispatch-post-bash.manifest\"",
+            "shell": "bash",
+            "timeout": 120,
+            "statusMessage": "Running Bash post-hook block (dispatched)"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/hook-run.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/notify-sound.sh\" stop 2>/dev/null || true",
+            "shell": "bash",
+            "timeout": 15,
+            "statusMessage": "Playing turn-finished sound"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/hook-run.sh\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/notify-sound.sh\" 2>/dev/null || true",
+            "shell": "bash",
+            "timeout": 15,
+            "statusMessage": "Playing attention-needed sound"
+          }
+        ]
+      }
+    ]
+  }
+}
