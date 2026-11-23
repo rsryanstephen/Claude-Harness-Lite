@@ -58,8 +58,9 @@ What the installer does:
   folder into the clone. **Anything already at those paths is moved to
   `harness-state/settings-backups/` in that folder first**, with a timestamp. That includes
   skills and a `CLAUDE.md` of your own, so copy back what you still want.
-- Merges the hook wiring and permission rules into `settings.json` there. Your own settings
-  are kept, and the previous file is backed up to the same folder. Hook entries and a status
+- Merges the hook wiring and permission rules into `settings.json` there, and starts sessions
+  in auto mode unless you already chose a mode there (in the default mode, every file write
+  into the Claude folder asks first, whatever the rules allow). Your own settings are kept, and the previous file is backed up to the same folder. Hook entries and a status
   line left by another harness, whose files this one does not ship, are dropped. The added
   rules include the two that let Slack and Gmail run unprompted and the ones that switch the
   other connectors off, and they stay when another harness is installed over this one later. So to return to a previous harness exactly, run

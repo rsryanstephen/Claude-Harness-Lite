@@ -280,10 +280,23 @@ function Merge-Settings {
   }
   # additionalDirectories is genuinely per-adopter (this file is real, not shared) --
   # just make sure THIS adopter's own ~/.claude is in there, never touch other entries.
+  # The clone goes in too (user, 2026-11-23): the linked files in the Claude folder resolve into
+  # it, and a write to one (`cat >> ~/.claude/<file>`) otherwise asks for approval as "outside the
+  # allowed working directories" -- probed in auto mode: asks without it, runs with it
+  # (harness-state/runbooks/lite-edition/symlink-write-probe4.sh).
   $existingDirs = @()
   if ($existingPerms.ContainsKey('additionalDirectories')) { $existingDirs = @($existingPerms['additionalDirectories']) }
-  if ($existingDirs -notcontains $ClaudeDirPath) { $existingDirs = @($existingDirs) + @($ClaudeDirPath) }
+  foreach ($dir in @($ClaudeDirPath, (Resolve-Path -LiteralPath $repoRoot).Path)) {
+    if ($existingDirs -notcontains $dir) { $existingDirs = @($existingDirs) + @($dir) }
+  }
   $existingPerms['additionalDirectories'] = @($existingDirs)
+  # Auto mode (user, 2026-11-23: no approval for Claude's commands in any edition). In default
+  # mode every tool write under the Claude folder asks as "a sensitive file" whatever the allow
+  # rules say (probed: runbooks/lite-edition/symlink-write-probe*.sh). Set only when absent:
+  # an adopter who picked a mode keeps it.
+  if ($Template['permissions'].ContainsKey('defaultMode') -and -not $existingPerms.ContainsKey('defaultMode')) {
+    $existingPerms['defaultMode'] = $Template['permissions']['defaultMode']
+  }
 
   if (-not $Existing.ContainsKey('hooks')) { $Existing['hooks'] = @{} }
   $Existing['hooks'] = Merge-HooksSection -ExistingHooks $Existing['hooks'] -TemplateHooks $Template['hooks']
