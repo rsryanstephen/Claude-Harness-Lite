@@ -29,6 +29,8 @@ there arrives here with the next sync.
   for two that quietly give a wrong answer there: `jq` output with Windows line endings fed
   into another command, and `TZ=<city> date`, which prints UTC.
 - **Two sounds.** One tone when a reply is finished, another when a session needs you.
+- **Usage at a glance.** A line under the prompt shows the model, how full the context is, and
+  how much of your 5-hour and weekly usage is gone, turning amber and then red as each fills.
 
 Left out on purpose: session lists, ticket and pull-request workflow, Slack and
 mail rules, reminders and monitors, the memory store, machine tooling, the test suite, and any

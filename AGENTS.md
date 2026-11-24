@@ -46,6 +46,7 @@ there, so two profiles never share claims or state.
 | `msys-command-traps-nudge.sh` | before a Bash call | Refuses two Git Bash traps that give a wrong answer with no error: raw `jq` output piped into `jq` or a `while read` loop with no `tr -d '\r'` or `-b` (Windows jq writes CRLF), and `TZ=<Area/City> date` (prints UTC). Passes with `USER_SAID_SO=1`. |
 | `subagent-model-tiering-gate.sh` | before an Agent call | Refuses a subagent call whose prompt has no word cap for the report. Add one and send it again. |
 | `notify-sound.sh` | Stop, Notification | Plays one tone when a reply is finished and another when the session needs the user. |
+| `statusline.sh` | status line | Draws `model \| ctx:% \| 5h:% \| wk:%` under the prompt (amber at 60/75%, red at 80/90%). Writes nothing. |
 
 Also in force: the deny list in `settings.json` (force-push, `curl | sh`, reading `.env`, and
 similar).
